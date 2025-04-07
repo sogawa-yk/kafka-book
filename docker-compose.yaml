@@ -19,6 +19,19 @@ services:
       KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka:29093'
       CLUSTER_ID: 'ciWo7IWazngRchmPES6q5A=='
 
+  schema-registry:
+    image: confluentinc/cp-schema-registry:7.5.1
+    hostname: schema-registry
+    container_name: schema-registry
+    depends_on:
+      - kafka
+    ports:
+      - "8081:8081"
+    environment:
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kafka:29092
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+
   producer:
     build: 
       context: ./producer
@@ -26,6 +39,7 @@ services:
       - ./producer:/app
     depends_on:
       - kafka
+      - schema-registry
     tty: true
 
   consumer:
@@ -35,4 +49,5 @@ services:
       - ./consumer:/app
     depends_on:
       - kafka
+      - schema-registry
     tty: true

@@ -10,10 +10,9 @@ producer = KafkaProducer(
 
 # メッセージ送信のサンプル
 try:
-    for i in range(5):
+    for i in range(100):
         message = {'number': i}
-        producer.send('test-topic', value=message)
+        producer.send('test-topic', value=message).get()
         print(f"Sent: {message}")
-        time.sleep(1)
 finally:
     producer.close()
